@@ -85,6 +85,7 @@ class MainActivity : ComponentActivity() {
                                 messageToEncrypt = cryptoManager.decrypt(
                                     inputStream = FileInputStream(file)
                                 ).decodeToString()
+                                messageToDecrypt = ""
                             }
                         ) {
                             Text(text = "Decrypt")
