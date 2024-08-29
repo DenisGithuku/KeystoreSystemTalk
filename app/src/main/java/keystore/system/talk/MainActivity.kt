@@ -1,6 +1,7 @@
 package keystore.system.talk
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import keystore.system.talk.ui.theme.KeystoreSystemTalkTheme
 import java.io.File
@@ -35,6 +37,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KeystoreSystemTalkTheme {
+                val context = LocalContext.current
+
                 var messageToEncrypt by remember {
                     mutableStateOf("")
                 }
@@ -63,6 +67,10 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Button(
                             onClick = {
+                                if (messageToEncrypt.isEmpty()) {
+                                    Toast.makeText(context, "Please enter a valid message", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
                                 // Convert string to byte array
                                 val bytes = messageToEncrypt.encodeToByteArray()
                                 val file = File(filesDir, "secret.txt")
