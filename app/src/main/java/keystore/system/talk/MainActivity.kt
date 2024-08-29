@@ -64,13 +64,14 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 // Convert string to byte array
-                                val bytes = messageToDecrypt.encodeToByteArray()
+                                val bytes = messageToEncrypt.encodeToByteArray()
                                 val file = File(filesDir, "secret.txt")
                                 if (!file.exists()) {
                                     file.createNewFile()
                                 }
                                 val fileOutputStream = FileOutputStream(file)
                                 messageToDecrypt = cryptoManager.encrypt(bytes,fileOutputStream).decodeToString()
+                                messageToEncrypt = ""
                             }
                         ) {
                             Text(
@@ -81,7 +82,7 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 val file = File(filesDir, "secret.txt")
-                                messageToDecrypt = cryptoManager.decrypt(
+                                messageToEncrypt = cryptoManager.decrypt(
                                     inputStream = FileInputStream(file)
                                 ).decodeToString()
                             }
