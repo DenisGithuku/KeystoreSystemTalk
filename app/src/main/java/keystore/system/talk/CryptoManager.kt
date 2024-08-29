@@ -10,7 +10,6 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 
-
 class CryptoManager {
 
     // Get a reference to the keystore api
@@ -41,12 +40,14 @@ class CryptoManager {
         return existingKey?.secretKey ?: createKey()
     }
 
-    // Create an encryption cipher (secret)
-    private val encryptionCypher = Cipher.getInstance(TRANSFORMATION).apply {
-        init(Cipher.ENCRYPT_MODE, createKey())
+    // Create a new encryption cipher for each encryption operation
+    private fun getEncryptionCipher(): Cipher {
+        return Cipher.getInstance(TRANSFORMATION).apply {
+            init(Cipher.ENCRYPT_MODE, getKey()) // Generate a new IV automatically
+        }
     }
 
-    // Create an initialization vector -> initial state of our decryption (randomized sequence of bytes)
+    // Create a decryption cipher with the provided IV
     private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
             init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
@@ -63,15 +64,16 @@ class CryptoManager {
     }
 
     fun encrypt(byteArray: ByteArray, outputStream: OutputStream): ByteArray {
-        val encryptedBytes = encryptionCypher.doFinal(byteArray)
+        val encryptionCipher = getEncryptionCipher() // Use a new cipher for each encryption
+        val encryptedBytes = encryptionCipher.doFinal(byteArray)
 
         /*
         Put the encrypted bytes in a stream so that when we need to decrypt our cipher
         we need the iv value
          */
         outputStream.use {
-            it.write(encryptionCypher.iv.size)
-            it.write(encryptionCypher.iv)
+            it.write(encryptionCipher.iv.size)
+            it.write(encryptionCipher.iv)
             it.write(encryptedBytes.size)
             it.write(encryptedBytes)
         }
