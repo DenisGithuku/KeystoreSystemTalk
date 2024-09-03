@@ -1,14 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
-    namespace = "com.githukudenis.talk"
+    namespace = "keystore.system.talk"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.githukudenis.talk"
+        applicationId = "keystore.system.talk"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -56,9 +57,11 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.datastore.prefs)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.jetbrains.kotlinx.serialization)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
